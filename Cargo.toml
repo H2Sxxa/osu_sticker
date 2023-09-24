@@ -12,3 +12,6 @@ rusttype = "0.9.3"
 
 [profile.release]
 lto = true
+
+[lib]
+crate-type = ["rlib", "staticlib", "cdylib"]
