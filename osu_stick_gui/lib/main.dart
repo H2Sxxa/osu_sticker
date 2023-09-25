@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _x = 0, _y = 0;
 
   void generate() {
-    generate_osu(_x, _y, _sizex, _sizey);
+    // generate_osu(_x, _y, _sizex, _sizey);
   }
 
   @override
