@@ -1,0 +1,26 @@
+name: DyLib build
+
+on: 
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - 'src/**'
+      
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: cargo build --release --verbose
+    - name: Upload build
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: dylib
+        path: 'target/release/**'
