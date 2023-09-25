@@ -1,0 +1,24 @@
+name: DyLib build
+
+on: 
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - 'osu_stick_gui'
+
+jobs:
+ build:
+   runs-on: windows-latest
+   steps:
+     - uses: actions/checkout@v3
+     - uses: subosito/flutter-action@v2
+       with:
+         channel: 'stable'
+     - run: flutter config --enable-windows-desktop
+     - run: flutter build apk
+     - name: Upload Artifact
+       uses: actions/upload-artifact@v3.1.2
+       with:
+         name: osg-apks
+         path: 'build/app/outputs/apk/release/*'
