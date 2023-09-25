@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "io.github.h2sxxa.osu_stick_gui"
+    namespace "com.example.osu_stick_gui"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
