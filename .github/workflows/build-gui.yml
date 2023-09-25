@@ -5,7 +5,7 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'osu_stick_gui'
+      - 'osu_stick_gui/**'
 
 jobs:
  build:
