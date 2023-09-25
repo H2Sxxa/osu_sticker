@@ -11,16 +11,27 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
 
-    runs-on: ubuntu-latest
+  strategy:
+    matrix:
+      os: [ubuntu-latest, windows-latest]
+
+  build:
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v3
     - name: Build
       run: cargo build --release --verbose
-    - name: Upload build
+
+    - name: Upload Linux
       uses: actions/upload-artifact@v3.1.2
       with:
-        name: dylib
-        path: 'target/release/**'
+        name: dylib-linux
+        path: 'target/release/*.so'
+
+    - name: Upload Windows
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: dylib-windows
+        path: 'target/release/*.dll'
