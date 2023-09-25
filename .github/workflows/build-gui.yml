@@ -1,4 +1,4 @@
-name: DyLib build
+name: GUI build
 
 on: 
   workflow_dispatch:
