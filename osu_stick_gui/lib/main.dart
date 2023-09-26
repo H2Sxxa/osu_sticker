@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:super_clipboard/super_clipboard.dart';
 import 'ffi_bridge.dart';
 
 void main() {
@@ -100,11 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               FilledButton.icon(
-                onPressed: () async {
-                  final item = DataWriterItem();
-                  item.add(Formats.png(getPNGBuforDf()));
-                  ClipboardWriter.instance.write([item]);
-                },
+                onPressed: () async {},
                 icon: const Icon(Icons.copy),
                 label: const Text("copy"),
               ),
