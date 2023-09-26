@@ -110,7 +110,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () async {
                     String? path = await FilePicker.platform
                         .saveFile(fileName: "result.png", type: FileType.image);
-                    path ??= "./result.png";
+                    if (path == null) {
+                      return;
+                    }
                     await File("cache.png").copy(path);
                   },
                   icon: const Icon(Icons.save),
