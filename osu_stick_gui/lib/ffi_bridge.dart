@@ -4,6 +4,7 @@
 
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:ffi/ffi.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,10 @@ final void Function(Pointer<Utf8> text, int x, int y, double size_x,
 
 Image getDeafult() {
   return Image.asset("images/default.png");
+}
+
+Uint8List getPNGBuforDf() {
+  return File("cache.png").readAsBytesSync();
 }
 
 Pointer<Utf8> toUtfPtr(String x) {
