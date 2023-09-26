@@ -48,7 +48,12 @@ Image getDeafult() {
 }
 
 Uint8List getPNGBuforDf() {
-  return File("cache.png").readAsBytesSync();
+  String cachepth = "cache.png";
+  if (Platform.isAndroid) {
+    getApplicationCacheDirectory()
+        .then((value) => cachepth = "${value.path}/cache.png");
+  }
+  return File(cachepth).readAsBytesSync();
 }
 
 Pointer<Utf8> toUtfPtr(String x) {
