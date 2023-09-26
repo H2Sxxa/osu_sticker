@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'ffi_bridge.dart';
 
@@ -33,11 +36,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _sizex = 0, _sizey = 0;
-  int _x = 0, _y = 0;
-
+  double _size = 100;
+  int _x = 75, _y = 125;
+  String _text = "";
+  Image _image = getDeafult();
   void generate() {
-    // generate_osu(_x, _y, _sizex, _sizey);
+    setState(() {
+      generate_osu(
+          toUtfPtr(_text), _x, _y, _size, _size, toUtfPtr("cache.png"));
+      _image = Image.memory(File("cache.png").readAsBytesSync());
+    });
   }
 
   @override
@@ -60,22 +68,27 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: SizedBox(
               width: 350,
               height: 350,
-              child: getDefault(),
+              child: _image,
             )),
           ),
           const SizedBox(
             height: 20,
           ),
-          const SizedBox(
+          SizedBox(
             width: 160,
             height: 50,
             child: TextField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   label: Text(
                     "输入生成文字",
                     textAlign: TextAlign.center,
                   )),
+              onChanged: (value) {
+                _text = value;
+                generate();
+              },
+              onEditingComplete: () => generate(),
               textAlign: TextAlign.center,
             ),
           ),
@@ -86,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               FilledButton.icon(
-                onPressed: () {},
+                onPressed: () async {},
                 icon: const Icon(Icons.copy),
                 label: const Text("copy"),
               ),
@@ -94,7 +107,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: 20,
               ),
               FilledButton.icon(
-                  onPressed: () {},
+                  onPressed: () async {
+                    String? path = await FilePicker.platform
+                        .saveFile(fileName: "result.png", type: FileType.image);
+                    path ??= "./result.png";
+                    await File("cache.png").copy(path);
+                  },
                   icon: const Icon(Icons.save),
                   label: const Text("save"))
             ],
@@ -103,36 +121,28 @@ class _MyHomePageState extends State<MyHomePage> {
             height: 20,
           ),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Text("字体大小X"),
+            const Text("字体大小"),
             Slider(
-              value: _sizex,
+              value: _size,
               onChanged: (v) {
                 setState(() {
-                  _sizex = v;
+                  _size = v;
+                  generate();
                 });
               },
-              label: "sizex",
+              min: 0,
+              max: 300,
+              label: "$_size",
             ),
           ]),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Text("字体大小Y"),
-            Slider(
-              value: _sizey,
-              onChanged: (v) {
-                setState(() {
-                  _sizey = v;
-                });
-              },
-              label: "sizeY",
-            ),
-          ]),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Text("字体位置X"),
+            const Text("横向位置"),
             Slider(
               value: _x.toDouble(),
               onChanged: (v) {
                 setState(() {
                   _x = v.toInt();
+                  generate();
                 });
               },
               min: 0,
@@ -141,12 +151,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ]),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Text("字体位置Y"),
+            const Text("纵向位置"),
             Slider(
               value: _y.toDouble(),
               onChanged: (v) {
                 setState(() {
                   _y = v.toInt();
+                  generate();
                 });
               },
               min: 0,
