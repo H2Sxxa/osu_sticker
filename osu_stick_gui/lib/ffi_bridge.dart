@@ -4,17 +4,30 @@
 
 import 'dart:ffi';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:ffi/ffi.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 //final LIB_OSU_STICKER = DynamicLibrary.open("libosu_sticker.so");
-final DynamicLibrary nativeLib = Platform.isAndroid
-    ? DynamicLibrary.open('lib/libosu_sticker.so')
-    : Platform.isWindows
-        ? DynamicLibrary.open('lib/libosu_sticker.dll')
-        : DynamicLibrary.process();
+final DynamicLibrary nativeLib = handle_dylib();
+
+DynamicLibrary handle_dylib() {
+  if (Platform.isAndroid) {
+    String sopth = "";
+    rootBundle.load("lib/libosu_sticker.so").then((value) async {
+      Directory dir = await getApplicationSupportDirectory();
+      sopth = "${dir.path}/libosu_sticker.so";
+      await File(sopth).writeAsBytes(value.buffer.asUint8List());
+    });
+    return DynamicLibrary.open(sopth);
+  } else if (Platform.isWindows) {
+    return DynamicLibrary.open('lib/libosu_sticker.dll');
+  } else {
+    return DynamicLibrary.process();
+  }
+}
 
 final void Function(Pointer<Utf8> text, int x, int y, double size_x,
         double size_y, Pointer<Utf8> savepath) generate_osu =

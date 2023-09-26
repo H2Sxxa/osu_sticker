@@ -40,6 +40,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _x = 75, _y = 125;
   String _text = "";
   Image _image = getDeafult();
+
+  
   void generate() {
     setState(() {
       generate_osu(
