@@ -12,10 +12,6 @@ env:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        sys_v: []
-        paths: []
 
     runs-on: ubuntu-latest
 
