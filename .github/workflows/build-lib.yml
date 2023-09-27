@@ -14,23 +14,25 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        
-    runs-on: ${{ matrix.os }}
+        sys_v: []
+        paths: []
+
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
+    - uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r25c
     - name: Build
-      run: cargo build --release --verbose
+      run: |
+        rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android
+        cargo build --target aarch64-linux-android --release
+        cargo build --target armv7-linux-androideabi --release
+        cargo build --target i686-linux-android --release
 
-    - name: Upload Linux
+    - name: Upload Android
       uses: actions/upload-artifact@v3.1.2
       with:
-        name: dylib-linux
-        path: 'target/release/*.so'
-
-    - name: Upload Windows
-      uses: actions/upload-artifact@v3.1.2
-      with:
-        name: dylib-windows
-        path: 'target/release/*.dll'
+        name: "Lib"
+        path: 'target/**'
