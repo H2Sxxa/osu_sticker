@@ -20,7 +20,7 @@ jobs:
     - name: Build
       run: |
         sudo apt-get install gcc-aarch64-linux-gnu
-        rustup target add aarch64-linux-androi
+        rustup target add aarch64-linux-android
         cargo build --target aarch64-linux-android --release
 
     - name: Upload Android
