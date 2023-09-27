@@ -38,6 +38,7 @@ dependencies:
   file_picker: ^5.5.0
   path_provider: ^2.1.1
   ffi: ^2.1.0
+  logger: ^2.0.2+1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -66,7 +67,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - images/default.png
-    - lib/libosu_sticker_armv8.so
+    - lib/libosu_sticker.so
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

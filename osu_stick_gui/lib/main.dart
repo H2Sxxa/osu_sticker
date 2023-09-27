@@ -2,10 +2,14 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'ffi_bridge.dart';
 
+final Logger logger = Logger();
+
 void main() {
+  logger.i("bootstrap");
   runApp(const MyApp());
 }
 
@@ -43,6 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Image _image = getDeafult();
 
   void generate() {
+    logger.i("gen a picture");
     String cachepth = "cache.png";
     getApplicationCacheDirectory()
         .then((value) => cachepth = "${value.path}/cache.png");

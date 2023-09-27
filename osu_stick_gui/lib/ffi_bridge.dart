@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:osu_stick_gui/main.dart';
 import 'package:path_provider/path_provider.dart';
 
 //final LIB_OSU_STICKER = DynamicLibrary.open("libosu_sticker.so");
@@ -16,10 +17,14 @@ final DynamicLibrary nativeLib = handle_dylib();
 DynamicLibrary handle_dylib() {
   if (Platform.isAndroid) {
     String sopth = "";
-    rootBundle.load("lib/libosu_sticker_armv8.so").then((value) async {
+    rootBundle.load("lib/libosu_sticker.so").then((value) async {
       Directory? dir = await getExternalStorageDirectory();
       dir ??= await getApplicationSupportDirectory();
-      sopth = "${dir.path}/libosu_sticker_armv8.so";
+      if (await File("${dir.path}/dbg_libosu_sticker.so").exists()) {
+        logger.w("load dbg .so!");
+        return DynamicLibrary.open("${dir.path}/dbg_libosu_sticker.so");
+      }
+      sopth = "${dir.path}/libosu_sticker.so";
       await File(sopth).writeAsBytes(value.buffer.asUint8List());
     });
     return DynamicLibrary.open(sopth);
