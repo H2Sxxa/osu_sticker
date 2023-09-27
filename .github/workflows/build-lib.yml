@@ -17,15 +17,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: nttld/setup-ndk@v1
-      with:
-        ndk-version: r25c
     - name: Build
       run: |
-        rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android
+        apt-get install gcc-aarch64-linux-gnu
+        rustup target add aarch64-linux-androi
         cargo build --target aarch64-linux-android --release
-        cargo build --target armv7-linux-androideabi --release
-        cargo build --target i686-linux-android --release
 
     - name: Upload Android
       uses: actions/upload-artifact@v3.1.2
