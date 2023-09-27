@@ -121,14 +121,31 @@ class _MyHomePageState extends State<MyHomePage> {
                     await File("cache.png").copy(path);
                   },
                   icon: const Icon(Icons.save),
-                  label: const Text("save"))
+                  label: const Text("save")),
+              const SizedBox(
+                width: 20,
+              ),
+              FilledButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _size = 100;
+                      _x = 75;
+                      _y = 125;
+                      _text = "";
+                    });
+                  },
+                  icon: const Icon(Icons.restore),
+                  label: const Text("reset all"))
             ],
           ),
           const SizedBox(
-            height: 20,
+            height: 25,
           ),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Text("字体大小"),
+            const Text(
+              "字体大小",
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ),
             Slider(
               value: _size,
               onChanged: (v) {
@@ -141,9 +158,21 @@ class _MyHomePageState extends State<MyHomePage> {
               max: 300,
               label: "$_size",
             ),
+            IconButton.filled(
+                onPressed: () => setState(() {
+                      _size = 100;
+                      generate();
+                    }),
+                icon: const Icon(Icons.restore))
           ]),
+          const SizedBox(
+            height: 20,
+          ),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Text("横向位置"),
+            const Text(
+              "横向位置",
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ),
             Slider(
               value: _x.toDouble(),
               onChanged: (v) {
@@ -156,9 +185,21 @@ class _MyHomePageState extends State<MyHomePage> {
               max: 350,
               label: "sizex",
             ),
+            IconButton.filled(
+                onPressed: () => setState(() {
+                      _x = 75;
+                      generate();
+                    }),
+                icon: const Icon(Icons.restore))
           ]),
+          const SizedBox(
+            height: 20,
+          ),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Text("纵向位置"),
+            const Text(
+              "纵向位置",
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ),
             Slider(
               value: _y.toDouble(),
               onChanged: (v) {
@@ -169,8 +210,14 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               min: 0,
               max: 350,
-              label: "sizex",
+              label: "sizey",
             ),
+            IconButton.filled(
+                onPressed: () => setState(() {
+                      _y = 125;
+                      generate();
+                    }),
+                icon: const Icon(Icons.restore))
           ])
         ])));
   }
