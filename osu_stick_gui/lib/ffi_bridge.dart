@@ -17,7 +17,8 @@ DynamicLibrary handle_dylib() {
   if (Platform.isAndroid) {
     String sopth = "";
     rootBundle.load("lib/libosu_sticker_armv8.so").then((value) async {
-      Directory dir = await getApplicationSupportDirectory();
+      Directory? dir = await getExternalStorageDirectory();
+      dir ??= await getApplicationSupportDirectory();
       sopth = "${dir.path}/libosu_sticker_armv8.so";
       await File(sopth).writeAsBytes(value.buffer.asUint8List());
     });
