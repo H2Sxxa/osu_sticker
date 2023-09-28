@@ -84,12 +84,12 @@ jobs:
         id: setup-ndk
         with:
           ndk-version: r21e
-          add-to-path: false
+          add-to-path: true
       - name: Install and configure dependencies
         run: |
           cat >>~/.cargo/config <<EOF
           [target.aarch64-linux-android]
-          linker = "${{ steps.setup-ndk.outputs.ndk-path }}/arm64/bin/aarch64-linux-android-clang"
+          linker = "aarch64-linux-android-clang"
           EOF
       - name: Install rust target
         run: rustup target add $TARGET
