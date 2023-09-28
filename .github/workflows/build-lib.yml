@@ -41,28 +41,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # a list of all the targets
         include:
-          #- TARGET: x86_64-unknown-linux-gnu # tested in a debian container on a mac
-          #  OS: ubuntu-latest
-          #- TARGET: x86_64-unknown-linux-musl # test in an alpine container on a mac
-          #  OS: ubuntu-latest
-          #- TARGET: aarch64-unknown-linux-gnu # tested on aws t4g.nano
-          #  OS: ubuntu-latest
-          - TARGET: aarch64-linux-android # tested on aws t4g.nano in alpine container
+          - TARGET: aarch64-linux-android
             OS: ubuntu-latest
-          #- TARGET: armv7-unknown-linux-gnueabihf # raspberry pi 2-3-4, not tested
-          #  OS: ubuntu-latest
-          #- TARGET: armv7-unknown-linux-musleabihf # raspberry pi 2-3-4, not tested
-          #  OS: ubuntu-latest
-          #- TARGET: arm-unknown-linux-gnueabihf # raspberry pi 0-1, not tested
-          #  OS: ubuntu-latest
-          #- TARGET: arm-unknown-linux-musleabihf # raspberry pi 0-1, not tested
-          #  OS: ubuntu-latest
-          #- TARGET: x86_64-apple-darwin # tested on a mac, is not properly signed so there are security warnings
-          #  OS: macos-latest
-          #- TARGET: x86_64-pc-windows-msvc # tested on a windows machine
-          #  OS: windows-latest
     needs: test
     runs-on: ${{ matrix.OS }}
     env:
@@ -79,7 +60,7 @@ jobs:
           key: build-cargo-registry-${{matrix.TARGET}}
       - name: List
         run: find ./
-      - name: setup-ndk
+      - name: Setup NDK
         uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
@@ -91,7 +72,10 @@ jobs:
           cat >>~/.cargo/config <<EOF
           [target.aarch64-linux-android]
           ar = "${{ steps.setup-ndk.outputs.ndk-path }}/osu_tc/arm64/bin/aarch64-linux-android-ar"
-          linker = "${{ steps.setup-ndk.outputs.ndk-path }}/osu_tc/arm64/bin/aarch64-linux-android-gcc"
+          linker = "${{ steps.setup-ndk.outputs.ndk-path }}/osu_tc/arm64/bin/aarch64-linux-android-gcc"          
+          rustflags = ["-L", "${{ steps.setup-ndk.outputs.ndk-path }}/osu_tc/arm64/sysroot/usr/lib/aarch64-linux-android/30",
+          "-L", "./libfuse_libs/3.10/static_lib",
+          "-l", "fuse3"]
           EOF
       - name: Install rust target
         run: rustup target add $TARGET
