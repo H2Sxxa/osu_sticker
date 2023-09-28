@@ -6,6 +6,7 @@ on:
     branches: [ master ]
     paths:
       - 'src/**'
+      - '.github/workflows/build-lib.yml'
   pull_request:
     branches: [ master ]
     paths:
@@ -64,7 +65,7 @@ jobs:
         uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
-          ndk-version: r21e
+          ndk-version: r26
           add-to-path: true
       - name: Install and configure dependencies
         run: |
@@ -73,9 +74,6 @@ jobs:
           [target.aarch64-linux-android]
           ar = "${{ steps.setup-ndk.outputs.ndk-path }}/osu_tc/arm64/bin/aarch64-linux-android-ar"
           linker = "${{ steps.setup-ndk.outputs.ndk-path }}/osu_tc/arm64/bin/aarch64-linux-android-gcc"          
-          rustflags = ["-L", "${{ steps.setup-ndk.outputs.ndk-path }}/osu_tc/arm64/sysroot/usr/lib/aarch64-linux-android/30",
-          "-L", "./libfuse_libs/3.10/static_lib",
-          "-l", "fuse3"]
           EOF
       - name: Install rust target
         run: rustup target add $TARGET
