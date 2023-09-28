@@ -43,18 +43,18 @@ jobs:
       matrix:
         # a list of all the targets
         include:
-          - TARGET: x86_64-unknown-linux-gnu # tested in a debian container on a mac
+          #- TARGET: x86_64-unknown-linux-gnu # tested in a debian container on a mac
+          #  OS: ubuntu-latest
+          #- TARGET: x86_64-unknown-linux-musl # test in an alpine container on a mac
+          #  OS: ubuntu-latest
+          #- TARGET: aarch64-unknown-linux-gnu # tested on aws t4g.nano
+          #  OS: ubuntu-latest
+          - TARGET: aarch64-linux-android # tested on aws t4g.nano in alpine container
             OS: ubuntu-latest
-          - TARGET: x86_64-unknown-linux-musl # test in an alpine container on a mac
-            OS: ubuntu-latest
-          - TARGET: aarch64-unknown-linux-gnu # tested on aws t4g.nano
-            OS: ubuntu-latest
-          - TARGET: aarch64-unknown-linux-musl # tested on aws t4g.nano in alpine container
-            OS: ubuntu-latest
-          - TARGET: armv7-unknown-linux-gnueabihf # raspberry pi 2-3-4, not tested
-            OS: ubuntu-latest
-          - TARGET: armv7-unknown-linux-musleabihf # raspberry pi 2-3-4, not tested
-            OS: ubuntu-latest
+          #- TARGET: armv7-unknown-linux-gnueabihf # raspberry pi 2-3-4, not tested
+          #  OS: ubuntu-latest
+          #- TARGET: armv7-unknown-linux-musleabihf # raspberry pi 2-3-4, not tested
+          #  OS: ubuntu-latest
           #- TARGET: arm-unknown-linux-gnueabihf # raspberry pi 0-1, not tested
           #  OS: ubuntu-latest
           #- TARGET: arm-unknown-linux-musleabihf # raspberry pi 0-1, not tested
@@ -79,28 +79,17 @@ jobs:
           key: build-cargo-registry-${{matrix.TARGET}}
       - name: List
         run: find ./
+      - name: setup-ndk
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r21e
+          add-to-path: false
       - name: Install and configure dependencies
         run: |
-          # dependencies are only needed on ubuntu as that's the only place where
-          # we make cross-compilation
-          if [[ $OS =~ ^ubuntu.*$ ]]; then
-            sudo apt-get install -qq crossbuild-essential-arm64 crossbuild-essential-armhf
-          fi
-
-          # some additional configuration for cross-compilation on linux
           cat >>~/.cargo/config <<EOF
-          [target.aarch64-unknown-linux-gnu]
-          linker = "aarch64-linux-gnu-gcc"
-          [target.aarch64-unknown-linux-musl]
-          linker = "aarch64-linux-gnu-gcc"
-          [target.armv7-unknown-linux-gnueabihf]
-          linker = "arm-linux-gnueabihf-gcc"
-          [target.armv7-unknown-linux-musleabihf]
-          linker = "arm-linux-gnueabihf-gcc"
-          [target.arm-unknown-linux-gnueabihf]
-          linker = "arm-linux-gnueabihf-gcc"
-          [target.arm-unknown-linux-musleabihf]
-          linker = "arm-linux-gnueabihf-gcc"
+          [target.aarch64-linux-android]
+          linker = "${{ steps.setup-ndk.outputs.ndk-path }}/arm64/bin/aarch64-linux-android-clang"
           EOF
       - name: Install rust target
         run: rustup target add $TARGET
@@ -111,4 +100,4 @@ jobs:
         with:
           name: ${{ matrix.TARGET }}-lib
           path: |
-            ./target/${{ matrix.TARGET }}/release/libosu_sticker.so
+            ./target/${{ matrix.TARGET }}/release/*.so
