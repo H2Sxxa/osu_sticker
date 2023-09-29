@@ -4,6 +4,7 @@ use image::{load_from_memory, Rgba};
 use imageproc::drawing::draw_text;
 use rusttype::Font;
 
+#[no_mangle]
 pub fn generate_osu_r(text: String, x: i32, y: i32, size_x: f32, size_y: f32, savepath: String) {
     let font = Font::try_from_bytes(include_bytes!("../resource/Aller-Bold.ttf"))
         .unwrap_or_else(|| panic!("Font load error"));
