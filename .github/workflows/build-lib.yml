@@ -16,51 +16,11 @@ on:
 env:
   CARGO_TERM_COLOR: always
 
-defaults:
-  run:
-    # necessary for windows
-    shell: bash
-
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Cargo cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ./target
-          key: test-cargo-registry
-      - name: List
-        run: find ./
-      - name: Run tests
-        run: cargo test --verbose
-
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - TARGET: aarch64-linux-android
-            OS: ubuntu-latest
-    needs: test
-    runs-on: ${{ matrix.OS }}
-    env:
-      TARGET: ${{ matrix.TARGET }}
-      OS: ${{ matrix.OS }}
-    steps:
-      - uses: actions/checkout@v2
-      - name: Cargo cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ./target
-          key: build-cargo-registry-${{matrix.TARGET}}
-      - name: List
-        run: find ./
       - name: Setup NDK
         uses: nttld/setup-ndk@v1
         id: setup-ndk
@@ -69,18 +29,13 @@ jobs:
           add-to-path: true
       - name: Install and configure dependencies
         run: |
-          ${{ steps.setup-ndk.outputs.ndk-path }}/build/tools/make_standalone_toolchain.py --api 30 --arch arm64 --install-dir ${{ steps.setup-ndk.outputs.ndk-path }}/osu_tc/arm64
-          cat >>~/.cargo/config <<EOF
-          [target.aarch64-linux-android]
-          linker = "${{ steps.setup-ndk.outputs.ndk-path }}/osu_tc/arm64/bin/aarch64-linux-android-gcc"
-          EOF
-      - name: Install rust target
-        run: rustup target add $TARGET
+          rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android
+          cargo install cargo-ndk
       - name: Run build
-        run: cargo build --release --verbose --target $TARGET
+        run: cargo ndk -t armeabi-v7a -t arm64-v8a -t x86_64 -o ./jniLibs build --release
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.TARGET }}-lib
+          name: Cross-Platform Library
           path: |
-            ./target/${{ matrix.TARGET }}/release/*.so
+            ./jniLibs/*
