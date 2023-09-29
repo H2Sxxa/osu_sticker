@@ -140,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     });
                   },
                   icon: const Icon(Icons.restore),
-                  label: const Text("reset all"))
+                  label: const Text("reset"))
             ],
           ),
           const SizedBox(

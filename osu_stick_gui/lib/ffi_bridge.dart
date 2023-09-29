@@ -19,12 +19,15 @@ DynamicLibrary handle_dylib() {
     String sopth = "";
     rootBundle.load("lib/libosu_sticker.so").then((value) async {
       Directory? dir = await getExternalStorageDirectory();
-      dir ??= await getApplicationSupportDirectory();
+      Directory inner_dir = await getApplicationSupportDirectory();
+      dir ??= inner_dir;
       if (await File("${dir.path}/dbg_libosu_sticker.so").exists()) {
         logger.w("load dbg .so!");
-        return DynamicLibrary.open("${dir.path}/dbg_libosu_sticker.so");
+        await File("${dir.path}/dbg_libosu_sticker.so")
+            .copy("${inner_dir.path}/libosu_sticker.so");
+        return DynamicLibrary.open("${inner_dir.path}/libosu_sticker.so");
       }
-      sopth = "${dir.path}/libosu_sticker.so";
+      sopth = "${inner_dir.path}/libosu_sticker.so";
       await File(sopth).writeAsBytes(value.buffer.asUint8List());
     });
     return DynamicLibrary.open(sopth);
