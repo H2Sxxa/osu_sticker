@@ -17,18 +17,19 @@ final DynamicLibrary nativeLib = handle_dylib();
 DynamicLibrary handle_dylib() {
   if (Platform.isAndroid) {
     String sopth = "";
+    getApplicationSupportDirectory()
+        .then((value) => sopth = "${value.path}/libosu_sticker.so");
     rootBundle.load("lib/libosu_sticker.so").then((value) async {
-      Directory? dir = await getExternalStorageDirectory();
+      Directory? external_dir = await getExternalStorageDirectory();
       Directory inner_dir = await getApplicationSupportDirectory();
-      dir ??= inner_dir;
-      if (await File("${dir.path}/dbg_libosu_sticker.so").exists()) {
+      external_dir ??= inner_dir;
+      String dbg_so = "${external_dir.path}/dbg_libosu_sticker.so";
+      if (await File(dbg_so).exists()) {
         logger.w("load dbg .so!");
-        await File("${dir.path}/dbg_libosu_sticker.so")
-            .copy("${inner_dir.path}/libosu_sticker.so");
-        return DynamicLibrary.open("${inner_dir.path}/libosu_sticker.so");
+        await File(dbg_so).copy(sopth);
+      } else {
+        await File(sopth).writeAsBytes(value.buffer.asUint8List());
       }
-      sopth = "${inner_dir.path}/libosu_sticker.so";
-      await File(sopth).writeAsBytes(value.buffer.asUint8List());
     });
     return DynamicLibrary.open(sopth);
   } else if (Platform.isWindows) {
