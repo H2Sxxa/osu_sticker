@@ -49,6 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void generate() {
     logger.i("gen a picture");
     String cachepth = "cache.png";
+    
     getApplicationCacheDirectory()
         .then((value) => cachepth = "${value.path}/cache.png");
 
