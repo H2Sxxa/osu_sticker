@@ -67,6 +67,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - images/default.png
+    - solib/lib/arm64-v8a/libosu_sticker.so
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

@@ -16,11 +16,13 @@ final DynamicLibrary nativeLib = handle_dylib();
 
 DynamicLibrary handle_dylib() {
   if (Platform.isAndroid) {
-    return DynamicLibrary.open("libosu_sticker.so");
+    //return DynamicLibrary.open("libosu_sticker.so");
     String sopth = "";
     getApplicationSupportDirectory()
         .then((value) => sopth = "${value.path}/libosu_sticker.so");
-    rootBundle.load("lib/libosu_sticker.so").then((value) async {
+    rootBundle
+        .load("solib/lib/arm64-v8a/libosu_sticker.so")
+        .then((value) async {
       Directory? external_dir = await getExternalStorageDirectory();
       Directory inner_dir = await getApplicationSupportDirectory();
       external_dir ??= inner_dir;
