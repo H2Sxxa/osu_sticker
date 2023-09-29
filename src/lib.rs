@@ -16,6 +16,7 @@ pub fn get_bg() -> DynamicImage {
 }
 
 pub fn generate_osu_r(text: String, x: i32, y: i32, size_x: f32, size_y: f32, savepath: String) {
+    println!("start handle in rs");
     let out = draw_text(
         &get_bg(),
         Rgba([255u8, 255u8, 255u8, 255u8]),
@@ -28,8 +29,8 @@ pub fn generate_osu_r(text: String, x: i32, y: i32, size_x: f32, size_y: f32, sa
         &get_font(),
         &text,
     );
-    out.save_with_format(savepath.as_str(), image::ImageFormat::Png)
-        .unwrap();
+
+    //out.save_with_format(savepath.as_str(), image::ImageFormat::Png).unwrap();
 }
 
 #[no_mangle]
@@ -41,6 +42,7 @@ pub extern "C" fn generate_osu(
     size_y: c_float,
     savepath: *const c_char,
 ) {
+    println!("invoke from c ffi");
     generate_osu_r(
         unsafe { CStr::from_ptr(text).to_string_lossy().to_string() },
         x,
@@ -50,4 +52,3 @@ pub extern "C" fn generate_osu(
         unsafe { CStr::from_ptr(savepath).to_string_lossy().to_string() },
     )
 }
-
