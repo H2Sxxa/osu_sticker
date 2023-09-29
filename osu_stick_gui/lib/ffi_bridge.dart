@@ -16,6 +16,7 @@ final DynamicLibrary nativeLib = handle_dylib();
 
 DynamicLibrary handle_dylib() {
   if (Platform.isAndroid) {
+    return DynamicLibrary.open("libosu_sticker.so");
     String sopth = "";
     getApplicationSupportDirectory()
         .then((value) => sopth = "${value.path}/libosu_sticker.so");
@@ -33,7 +34,7 @@ DynamicLibrary handle_dylib() {
     });
     return DynamicLibrary.open(sopth);
   } else if (Platform.isWindows) {
-    return DynamicLibrary.open('lib/libosu_sticker.dll');
+    return DynamicLibrary.open('libosu_sticker.dll');
   } else {
     return DynamicLibrary.process();
   }
