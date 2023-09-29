@@ -72,7 +72,6 @@ jobs:
           ${{ steps.setup-ndk.outputs.ndk-path }}/build/tools/make_standalone_toolchain.py --api 30 --arch arm64 --install-dir ${{ steps.setup-ndk.outputs.ndk-path }}/osu_tc/arm64
           cat >>~/.cargo/config <<EOF
           [target.aarch64-linux-android]
-          ar = "${{ steps.setup-ndk.outputs.ndk-path }}/osu_tc/arm64/bin/aarch64-linux-android-ar"
           linker = "${{ steps.setup-ndk.outputs.ndk-path }}/osu_tc/arm64/bin/aarch64-linux-android-gcc"
           EOF
       - name: Install rust target
