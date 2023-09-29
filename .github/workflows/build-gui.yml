@@ -23,7 +23,6 @@ jobs:
          channel: 'stable'
      - run: |
          cd osu_stick_gui
-         cp -r solib/lib build\app\intermediates\merged_native_libs\release\out
          flutter build apk --release
      - name: Upload Artifact
        uses: actions/upload-artifact@v3.1.2
