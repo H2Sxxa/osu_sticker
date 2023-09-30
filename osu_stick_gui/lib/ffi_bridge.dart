@@ -37,6 +37,24 @@ final void Function(Pointer<Utf8> text, int x, int y, double size_x,
                     Pointer<Utf8> savepath)>>("generate_osu")
         .asFunction();
 
+final Pointer<Uint8> Function(Pointer<Utf8> text, int x, int y, double size_x,
+        double size_y, Pointer<Int32> byte_len) generate_osu_b =
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Uint8> Function(
+                    Pointer<Utf8> text,
+                    Int32 x,
+                    Int32 y,
+                    Float size_x,
+                    Float size_y,
+                    Pointer<Int32> byte_len)>>("generate_osu_b")
+        .asFunction();
+        
+final int Function() test_useable = nativeLib
+    .lookup<NativeFunction<Int32 Function()>>("test_useable")
+    .asFunction();
+
 Image getDeafult() {
   return Image.asset("images/default.png");
 }

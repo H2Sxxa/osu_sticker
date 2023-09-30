@@ -10,6 +10,7 @@ final Logger logger = Logger();
 
 void main() {
   logger.i("bootstrap");
+  logger.i("native useable identify: ${test_useable()}");
   runApp(const MyApp());
 }
 
@@ -49,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void generate() {
     logger.i("gen a picture");
     String cachepth = "cache.png";
-    
+
     getApplicationCacheDirectory()
         .then((value) => cachepth = "${value.path}/cache.png");
 
@@ -119,8 +120,14 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               FilledButton.icon(
                   onPressed: () async {
-                    String? path = await FilePicker.platform
-                        .saveFile(fileName: "result.png", type: FileType.image);
+                    String? path = "";
+                    if (Platform.isWindows) {
+                      path = await FilePicker.platform.saveFile(
+                          fileName: "result.png", type: FileType.image);
+                    } else {
+                      path =
+                          "${await FilePicker.platform.getDirectoryPath()}/result.png";
+                    }
                     if (path == null) {
                       return;
                     }
@@ -189,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               min: 0,
               max: 350,
-              label: "sizex",
+              label: "$_x",
             ),
             IconButton.filled(
                 onPressed: () => setState(() {
@@ -216,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               min: 0,
               max: 350,
-              label: "sizey",
+              label: "$_y",
             ),
             IconButton.filled(
                 onPressed: () => setState(() {
